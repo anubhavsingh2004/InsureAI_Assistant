@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsureAI – Intelligent Insurance Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #1e8077;
+      --light: #f5f7fa;
+      --dark: #263238;
+      --gray: #90a4ae;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #d0e8f2, #a0d9d9);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+      max-height: 800px;
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .chat-window {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-color: var(--light);
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 15px 20px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      position: relative;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .user-message {
+      background: white;
+      border: 1px solid #e0e0e0;
+      align-self: flex-end;
+      box-shadow: var(--shadow);
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot-message {
+      background: white;
+      border: 1px solid #e0e0e0;
+      align-self: flex-start;
+      box-shadow: var(--shadow);
+      border-bottom-left-radius: 4px;
+    }
+
+    .bot-message::before {
+      content: "InsureAI";
+      position: absolute;
+      top: -18px;
+      left: 0;
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .user-message::before {
+      content: "You";
+      position: absolute;
+      top: -18px;
+      right: 0;
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .input-area {
+      display: flex;
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #eee;
+      gap: 10px;
+    }
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+      border-radius: var(--radius);
+      border: 1px solid #ddd;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 15px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .file-upload {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .file-upload input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .file-upload label {
+      padding: 12px;
+      background: #f0f0f0;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-info {
+      font-size: 13px;
+      color: var(--gray);
+      margin-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--gray);
+      border-top: 1px solid #eee;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">
+      <h1>InsureAI – Intelligent Insurance Assistant</h1>
+    </div>
+
+    <div id="chat" class="chat-window">
+      <div class="message bot-message">
+        Hello! I'm your InsureAI assistant. I can help you with:<br><br>
+        • Policy questions<br>
+        • Claim assistance<br>
+        • Document analysis<br>
+        • Coverage explanations<br><br>
+        You can even upload documents for me to review!
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="file-upload">
+        <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt">
+        <label for="file-input">
+          <i class="fas fa-paperclip"></i>
+          <span class="file-info">No file selected</span>
+        </label>
+      </div>
+
+      <div class="input-group">
+        <input id="query" type="text" placeholder="Ask about your insurance..." autocomplete="off" />
+        <button onclick="send()">
+          <i class="fas fa-paper-plane"></i> Send
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <!-- Built with ❤️ for DSW GenAI Challenge | Secured with bank-level encryption -->
+    </div>
+  </div>
+
+  <script>
+    const chatWindow = document.getElementById('chat');
+    const queryInput = document.getElementById('query');
+    const fileInput = document.getElementById('file-input');
+    const fileInfo = document.querySelector('.file-info');
+
+    fileInput.addEventListener('change', async function () {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
+        const fileName = file.name;
+        fileInfo.textContent = fileName;
+        appendMessage('user-message', `📄 Attached file: ${fileName}`);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const res = await fetch("/upload", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await res.json();
+          if (data.status === "success") {
+            appendMessage('bot-message', `✅ File uploaded successfully! I'm ready to answer questions about "${fileName}".`);
+          } else {
+            appendMessage('bot-message', '❌ File upload failed. Please try again.');
+          }
+        } catch (err) {
+          console.error("Upload error:", err);
+          appendMessage('bot-message', '❌ Server error during file upload.');
+        }
+      } else {
+        fileInfo.textContent = 'No file selected';
+      }
+    });
+
+    async function send() {
+      const userQuery = queryInput.value.trim();
+      if (!userQuery) return;
+
+      appendMessage('user-message', userQuery);
+      queryInput.value = '';
+
+      const thinking = appendMessage('bot-message', '<div class="typing">Analyzing<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>');
+
+      try {
+        const res = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: userQuery })
+        });
+
+        const data = await res.json();
+        thinking.remove();
+        appendMessage('bot-message', data.response);
+      } catch (err) {
+        thinking.remove();
+        appendMessage('bot-message', '❌ Something went wrong while contacting the server.');
+        console.error("Ask error:", err);
+      }
+    }
+
+    function appendMessage(type, text) {
+      const msg = document.createElement('div');
+      msg.className = `message ${type}`;
+      msg.innerHTML = text;
+      chatWindow.appendChild(msg);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+      return msg;
+    }
+
+    queryInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') send();
+    });
+  </script>
+</body>
+</html>
