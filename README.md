@@ -1,70 +1,167 @@
-# InsureAI_Assistant
+# InsureAI Assistant 🤖
 
-# Cust_Insurance_Assistant
-This is a customer insurance assistant agent that helps customers know more about BSIF
+An intelligent AI-powered insurance assistant that helps users understand their insurance policies by analyzing uploaded PDF documents and answering questions in real-time.
 
-**InsureAI** is a GenAI-powered Flask web application that acts as an intelligent insurance assistant. It allows users to ask questions about insurance policies and upload documents (e.g., PDFs), from which the AI can extract and answer context-specific queries.
+## ✨ Features
 
+- **📄 PDF Document Analysis**: Upload and extract text from insurance policy PDFs
+- **🤖 AI-Powered Q&A**: Get intelligent answers about your insurance policy using Groq's Llama3-70B model
+- **💬 Interactive Chat Interface**: Modern, responsive web interface for seamless interaction
+- **🔒 Secure File Handling**: Safe file upload and processing with proper validation
+- **📱 Mobile-Friendly**: Responsive design that works on all devices
+- **⚡ Real-time Responses**: Fast, accurate answers to insurance-related questions
 
-
-## Features
-
-- Chat interface for insurance-related queries  
-- Upload support for PDFs and text files  
-- AI-powered answers using Groq + LLaMA3 (or any compatible LLM)  
-- Context-aware responses based on uploaded content  
-- Sleek and responsive frontend UI with modern gradient    
-
-## Project Structure
-.
-├── app.py # Flask backend entry point
-├── requirements.txt # Python dependencies
-├── render.yaml # Render deployment config
-├── agent/
-│ ├── support_bot.py # Query handler and Groq API logic
-│ └── doc_parser.py # PDF parser for uploaded content
-├── templates/
-│ └── index.html # Frontend UI
-├── data/ # Uploaded documents
-└── static/ (optional) # Any static CSS/images (not currently used)
-
-
-## Getting Started (Local Development)
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.8+
-- Pip (Python package manager)
-- A [Groq API key](https://console.groq.com/keys)
-
+- Python 3.8 or higher
+- Groq API key (or OpenAI API key)
 
 ### Installation
 
-# 1. Clone the repo
-git clone https://github.com/yourusername/insureai.git
-cd insureai
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd InsureAI_Assistant
+   ```
 
-# 2. Set up virtual environment
-python -m venv venv
-venv\Scripts\activate
+2. **Create and activate virtual environment**
+   ```bash
+   python -m venv venv
+   
+   # On Windows
+   venv\Scripts\activate
+   
+   ```
 
-# 3. Install dependencies
-pip install -r requirements.txt
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# 4. Set your API key (Groq or OpenAI)
-1. On Windows: set GROQ_API_KEY=your_key
-2. Run the App
-3. python app.py
-4. Open your browser and visit http://127.0.0.1:5000
+4. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   
+   ```
 
-# How It Works
-1. User uploads a PDF policy document (e.g., health, home, car).
-2. The file is parsed using doc_parser.py to extract text.
-3. User asks a natural-language question.
-4. The chatbot combines document content and user query using Groq's API.
-5. A well-formatted AI-generated answer is returned in real-time.
+5. **Run the application**
+   ```bash
+   python app.py
+   ```
 
-# Example Use Case:
-- Ask: "What does Clause 11 mean in this policy?"
-- Upload: "sample_insurance_policy.pdf"
-- Get: "Clause 11: Accidental damage to garden equipment..."
+6. **Access the application**
+   
+   Open your browser and navigate to `http://localhost:5000`
+
+## 📖 Usage Guide
+
+### 1. Upload Insurance Policy
+- Click the "Choose File" button in the chat interface
+- Select your insurance policy PDF document
+- The system will automatically extract and process the text
+
+### 2. Ask Questions
+- Type your insurance-related questions in the chat input
+- Examples:
+  - "What is my deductible?"
+  - "What does my policy cover?"
+  - "What are the exclusions?"
+  - "How do I file a claim?"
+
+### 3. Get Intelligent Answers
+- The AI will analyze your policy document and provide accurate, contextual answers
+- Responses are formatted with clear headings, bullet points, and emojis for easy reading
+
+## 🏗️ Project Structure
+
+```
+InsureAI_Assistant/
+├── agent/
+│   ├── doc_parser.py      # PDF text extraction
+│   └── support_bot.py     # AI response generation
+├── data/
+│   ├── faqs.json          # FAQ data
+│   └── sample_insurance_policy.pdf
+├── static/
+│   ├── script.js          # Frontend JavaScript
+│   └── style.css          # Styling
+├── templates/
+│   └── index.html         # Main web interface
+├── app.py                 # Flask application
+├── wsgi.py               # WSGI entry point
+├── requirements.txt      # Python dependencies
+└── README.md            # This file
+```
+
+## 🔧 Configuration
+
+### API Configuration
+
+The application supports both Groq and OpenAI APIs:
+
+**For Groq (Recommended):**
+```python
+# In agent/support_bot.py
+API_KEY = os.getenv("GROQ_API_KEY")
+# Model: llama3-70b-8192
+```
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GROQ_API_KEY` | Your Groq API key | Yes (if using Groq) |
+| `PORT` | Server port (default: 5000) | No |
+
+## 🌐 API Endpoints
+
+### POST `/upload`
+Upload and process an insurance policy PDF.
+
+**Request:**
+- Content-Type: `multipart/form-data`
+- Body: PDF file
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "filename.pdf uploaded and processed successfully."
+}
+```
+
+### POST `/ask`
+Ask a question about the uploaded insurance policy.
+
+**Request:**
+```json
+{
+  "query": "What is my deductible?"
+}
+```
+
+**Response:**
+```json
+{
+  "response": "Based on your policy, your deductible is..."
+}
+```
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+python app.py
+```
+
+## 🛠️ Dependencies
+
+- **Flask** (3.1.1) - Web framework
+- **PyMuPDF** (1.24.3) - PDF text extraction
+- **requests** (2.32.4) - HTTP client
+- **python-dotenv** (1.1.1) - Environment variable management
+
