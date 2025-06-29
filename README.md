@@ -22,7 +22,7 @@ An intelligent AI-powered insurance assistant that helps users understand their 
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/anubhavsingh2004/InsureAI_Assistant.git
    cd InsureAI_Assistant
    ```
 
